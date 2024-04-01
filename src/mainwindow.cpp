@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->spinBox, SIGNAL(valueChanged(int)), ui->graphicsView,  SLOT(updateAverageLength(int)));
 }
 
 MainWindow::~MainWindow()

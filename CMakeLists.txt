@@ -18,10 +18,14 @@ find_package(Qt5Widgets REQUIRED)
 set(q_pen_drawer_SRCS
   src/main.cpp
   src/mainwindow.cpp
+  src/canvasview.cpp
+  src/bezierline.cpp
 )
 
 set(q_pen_drawer_HDRS
   include/q_pen_drawer/mainwindow.h
+  include/q_pen_drawer/canvasview.h
+  include/q_pen_drawer/bezierline.h
 )
 
 set(q_pen_drawer_UIS
@@ -48,10 +52,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 install(
   TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME}
-  # EXPORT ${PROJECT_NAME}
-  # ARCHIVE DESTINATION lib/${PROJECT_NAME}
-  # LIBRARY DESTINATION lib/${PROJECT_NAME}
-  # RUNTIME DESTINATION bin/${PROJECT_NAME}
 )
 
 ament_package()
