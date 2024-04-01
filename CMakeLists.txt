@@ -18,10 +18,12 @@ find_package(Qt5Widgets REQUIRED)
 set(q_pen_drawer_SRCS
   src/main.cpp
   src/mainwindow.cpp
+  src/canvasview.cpp
 )
 
 set(q_pen_drawer_HDRS
   include/q_pen_drawer/mainwindow.h
+  include/q_pen_drawer/canvasview.h
 )
 
 set(q_pen_drawer_UIS
