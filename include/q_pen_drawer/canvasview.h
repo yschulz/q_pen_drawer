@@ -7,12 +7,17 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
+#include "q_pen_drawer/bezierline.h"
+
 class CanvasView : public QGraphicsView{
     Q_OBJECT
 
     public:
         explicit CanvasView(QWidget* parent = nullptr);
         ~CanvasView();
+
+    private slots:
+        void updateAverageLength(int value);
 
     private:
         void wheelEvent(QWheelEvent* event) override;
@@ -21,6 +26,7 @@ class CanvasView : public QGraphicsView{
         void mouseMoveEvent(QMouseEvent* event) override;
 
         QGraphicsScene* scene_;
+        BezierLine* bezier_item_;
         bool control_drag_ = false;
 };
 
