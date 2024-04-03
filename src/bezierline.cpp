@@ -5,6 +5,8 @@
 #include <QtMath>
 #include <iostream>
 #include <QTransform>
+#include <Eigen/Core>
+#include <Eigen/LU>
 
 BezierLine::BezierLine(){
 }
@@ -118,6 +120,27 @@ QList<QPointF> BezierLine::getPoints(){
     return QList<QPointF>();
 }
 
+QPointF BezierLine::calculateBezierPoint(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
+    QPointF p_b =   qPow(1.0-t, 3) *                begin +
+                    3 * qPow(1.0 - t, 2) * t *      begin_control +
+                    3 * qPow(t, 2) * (1.0 - t) *    end_control +
+                    qPow(t, 3) *                    end;
+    return p_b;
+}
+
+QPointF BezierLine::calculateBezierDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
+    QPointF p_b =   3 * qPow(1.0-t, 2) *            (begin_control - begin) +
+                    6 * (1.0 - t) * t *             (end_control - begin_control) +
+                    3 * qPow(t, 2) *                (end - end_control);
+    return p_b;
+}
+
+QPointF BezierLine::calculateBezierSecondDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
+    QPointF p_b =   6 * (1.0-t) *                   (end_control - 2 * begin_control + begin) +
+                    6 * t *                         (end - 2 * end_control + begin_control);
+    return p_b;
+}
+
 void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, QWidget* /*widget*/){
     QPen position_pen, control_pen, line_pen;
 
@@ -163,13 +186,39 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
 
         while(t < 1.0){
 
-            QPointF p_b =   qPow(1.0-t, 3) *                (it-1)->position +
-                            3 * qPow(1.0 - t, 2) * t *      (it-1)->control_after +
-                            3 * qPow(t, 2) * (1.0 - t) *    it->control_before +
-                            qPow(t, 3) *                    it->position;
+            auto p_b = calculateBezierPoint((it-1)->position, (it-1)->control_after, it->control_before, it->position, t);
+            auto p_b_1 = calculateBezierDerivative((it-1)->position, (it-1)->control_after, it->control_before, it->position, t);
+            auto p_b_2 = calculateBezierSecondDerivative((it-1)->position, (it-1)->control_after, it->control_before, it->position, t);
+
+            Eigen::Matrix2d p_b_concat = (Eigen::Matrix2d() << p_b_1.x(), p_b_2.x(), 
+                                                                p_b_1.y(), p_b_2.y()).finished();
+            
+            Eigen::Vector2d p_b_1_eig = (Eigen::Vector2d() << p_b_1.x(), p_b_1.y()).finished();
+
+            auto nom = p_b_concat.determinant();
+            auto denom = qPow(p_b_1_eig.norm(), 3);
+
+            auto curvature = nom / denom;
+
+            
 
             painter->setPen(control_pen);
             painter->drawEllipse(p_b.x() - 1, p_b.y() - 1, 2, 2);
+
+            QPen curvature_pen;
+            curvature = std::clamp(curvature, 0.0001, 1.0);
+
+            
+
+            int hue = 250 + (std::log10(abs(curvature)) + 4) / 4 * 110;
+            QColor curvature_color;
+
+            curvature_color.setHsl(hue, 255, 127, 255);
+
+            curvature_pen.setWidth(2);
+            curvature_pen.setStyle(Qt::SolidLine);
+            curvature_pen.setColor(curvature_color);
+            painter->setPen(curvature_pen);
             painter->drawLine(last, p_b);
             last = p_b;
             t += delta;

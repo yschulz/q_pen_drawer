@@ -39,6 +39,10 @@ class BezierLine : public QGraphicsItem
 
         QList<QPointF> getPoints();
 
+        QPointF calculateBezierPoint(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t);
+        QPointF calculateBezierDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t);
+        QPointF calculateBezierSecondDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t);
+
         void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
     private:
