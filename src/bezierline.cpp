@@ -198,9 +198,7 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
             auto nom = p_b_concat.determinant();
             auto denom = qPow(p_b_1_eig.norm(), 3);
 
-            auto curvature = nom / denom;
-
-            
+            auto curvature = abs(nom / denom);
 
             painter->setPen(control_pen);
             painter->drawEllipse(p_b.x() - 1, p_b.y() - 1, 2, 2);
@@ -208,9 +206,7 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
             QPen curvature_pen;
             curvature = std::clamp(curvature, 0.0001, 1.0);
 
-            
-
-            int hue = 250 + (std::log10(abs(curvature)) + 4) / 4 * 110;
+            int hue = 250 + (std::log10(curvature) + 4) / 4 * 110;
             QColor curvature_color;
 
             curvature_color.setHsl(hue, 255, 127, 255);
