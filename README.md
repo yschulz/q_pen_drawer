@@ -23,8 +23,8 @@ Bezier points can be added by simply clicking inside the image and dragging the 
 
 By changing the value of the spin box at the top one can change the sample distance between the line points. Here is an example for a coarse setting:
 
-![alt text](coarse_res.png)
+![alt text](resource/coarse_res.png)
 
 And here is an example for a fine setting:
 
-![alt text](fine_res.png)
+![alt text](resource/fine_res.png)

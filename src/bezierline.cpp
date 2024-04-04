@@ -120,25 +120,24 @@ QList<QPointF> BezierLine::getPoints(){
     return QList<QPointF>();
 }
 
+// calculate bezier points and its derivatives
+// https://en.wikipedia.org/wiki/B%C3%A9zier_curve
 QPointF BezierLine::calculateBezierPoint(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
-    QPointF p_b =   qPow(1.0-t, 3) *                begin +
+    return          qPow(1.0-t, 3) *                begin +
                     3 * qPow(1.0 - t, 2) * t *      begin_control +
                     3 * qPow(t, 2) * (1.0 - t) *    end_control +
                     qPow(t, 3) *                    end;
-    return p_b;
 }
 
 QPointF BezierLine::calculateBezierDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
-    QPointF p_b =   3 * qPow(1.0-t, 2) *            (begin_control - begin) +
+    return          3 * qPow(1.0-t, 2) *            (begin_control - begin) +
                     6 * (1.0 - t) * t *             (end_control - begin_control) +
                     3 * qPow(t, 2) *                (end - end_control);
-    return p_b;
 }
 
 QPointF BezierLine::calculateBezierSecondDerivative(const QPointF &begin, const QPointF &begin_control, const QPointF &end_control, const QPointF &end, qreal t){
-    QPointF p_b =   6 * (1.0-t) *                   (end_control - 2 * begin_control + begin) +
+    return          6 * (1.0-t) *                   (end_control - 2 * begin_control + begin) +
                     6 * t *                         (end - 2 * end_control + begin_control);
-    return p_b;
 }
 
 void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*option*/, QWidget* /*widget*/){
@@ -173,6 +172,8 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
     for(auto it = points_.begin() ; it != points_.end(); it++){
         if (it == points_.begin()) continue;
 
+        // first check the approximate length so we know how to discretize ahead of time
+        // https://stackoverflow.com/questions/29438398/cheap-way-of-calculating-cubic-bezier-length
         auto arc_length_approx = (std::hypot(((it-1)->position - it->position).x(), ((it-1)->position - it->position).y() ) +
                                  std::hypot(((it-1)->position - (it-1)->control_after).x(), ((it-1)->position - (it-1)->control_after).y() ) +
                                  std::hypot((it->control_before - (it-1)->control_after).x(), (it->control_before - (it-1)->control_after).y() ) +
@@ -195,6 +196,8 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
             
             Eigen::Vector2d p_b_1_eig = (Eigen::Vector2d() << p_b_1.x(), p_b_1.y()).finished();
 
+            // curvature of parametric curve
+            // https://math.stackexchange.com/questions/220900/bezier-curvature
             auto nom = p_b_concat.determinant();
             auto denom = qPow(p_b_1_eig.norm(), 3);
 
