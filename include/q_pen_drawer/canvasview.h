@@ -18,6 +18,7 @@ class CanvasView : public QGraphicsView{
 
     private slots:
         void updateAverageLength(int value);
+        void setMinimumRadius(double value);
 
     private:
         void wheelEvent(QWheelEvent* event) override;

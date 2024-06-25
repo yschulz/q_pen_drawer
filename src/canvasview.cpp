@@ -12,6 +12,10 @@ CanvasView::CanvasView(QWidget* parent): QGraphicsView(parent){
 CanvasView::~CanvasView(){
 }
 
+void CanvasView::setMinimumRadius(double value){
+    bezier_item_->setMinimumRadius(value);
+}
+
 void CanvasView::wheelEvent(QWheelEvent* event){
     QGraphicsView::wheelEvent(event);
     scene_->update();

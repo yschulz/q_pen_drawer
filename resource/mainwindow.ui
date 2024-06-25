@@ -43,6 +43,17 @@
         </widget>
        </item>
        <item>
+        <widget class="MyButton" name="pushButton">
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+         <property name="icon">
+          <iconset resource="qt_resources.qrc">
+           <normaloff>:/images/load.png</normaloff>:/images/load.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -54,6 +65,16 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox">
+         <property name="minimum">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>499.990000000000009</double>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -69,6 +90,11 @@
    <class>CanvasView</class>
    <extends>QGraphicsView</extends>
    <header>q_pen_drawer/canvasview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>MyButton</class>
+   <extends>QPushButton</extends>
+   <header>q_pen_drawer/newbutton.hpp</header>
   </customwidget>
  </customwidgets>
  <resources/>

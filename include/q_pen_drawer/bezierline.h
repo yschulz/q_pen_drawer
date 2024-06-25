@@ -24,8 +24,7 @@ enum UpdateMode{
 
 };
 
-class BezierLine : public QGraphicsItem
-{
+class BezierLine : public QGraphicsItem{
     public:
         BezierLine();
 
@@ -36,6 +35,8 @@ class BezierLine : public QGraphicsItem
         inline void setAverageStep(int value){average_step_length_ = value;}
 
         bool selectClosest(QPointF point);
+
+        void setMinimumRadius(double value);
 
         QList<QPointF> getPoints();
 
@@ -51,6 +52,7 @@ class BezierLine : public QGraphicsItem
         QPair<qint16, UpdateMode> active_point_;
         qint16 point_size_ = 10;
         int average_step_length_ = 20;
+        double minimum_radius_ = 0.1;
 };
 
 #endif // BEZIERLINE_H

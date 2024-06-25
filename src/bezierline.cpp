@@ -11,6 +11,10 @@
 BezierLine::BezierLine(){
 }
 
+void BezierLine::setMinimumRadius(double value){
+    minimum_radius_ = value;
+}
+
 QRectF BezierLine::boundingRect() const {
     if(points_.begin() == points_.end()){
         return QRectF(0.0, 0.0, 0.0, 0.0);
@@ -203,6 +207,16 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
 
             auto curvature = abs(nom / denom);
 
+            std::cout << 1 / curvature << "\n";
+            QColor curvature_color;
+            
+            if(1 / curvature < minimum_radius_){
+                curvature_color.setHsl(360, 255, 127, 255);
+            }
+            else{
+                curvature_color.setHsl(250, 255, 127, 255);
+            }
+
             painter->setPen(control_pen);
             painter->drawEllipse(p_b.x() - 1, p_b.y() - 1, 2, 2);
 
@@ -210,9 +224,10 @@ void BezierLine::paint(QPainter* painter, const QStyleOptionGraphicsItem* /*opti
             curvature = std::clamp(curvature, 0.0001, 1.0);
 
             int hue = 250 + (std::log10(curvature) + 4) / 4 * 110;
-            QColor curvature_color;
 
-            curvature_color.setHsl(hue, 255, 127, 255);
+            // QColor curvature_color;
+
+            // curvature_color.setHsl(hue, 255, 127, 255);
 
             curvature_pen.setWidth(2);
             curvature_pen.setStyle(Qt::SolidLine);

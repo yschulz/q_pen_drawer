@@ -28,11 +28,15 @@ set(q_pen_drawer_HDRS
   include/q_pen_drawer/mainwindow.h
   include/q_pen_drawer/canvasview.h
   include/q_pen_drawer/bezierline.h
+  include/q_pen_drawer/newbutton.hpp
 )
 
 set(q_pen_drawer_UIS
   resource/mainwindow.ui
 )
+
+list(APPEND RESOURCES resource/qt_resources.qrc)
+qt5_add_resources(RCC_SOURCES ${RESOURCES})
 
 qt5_wrap_cpp(q_pen_drawer_MOCS ${q_pen_drawer_HDRS})
 
@@ -42,6 +46,7 @@ add_executable(${PROJECT_NAME}
   ${q_pen_drawer_SRCS}
   ${q_pen_drawer_MOCS}
   ${q_pen_drawer_UIS}
+  ${RCC_SOURCES}
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
